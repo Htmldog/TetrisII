@@ -5,7 +5,13 @@ function xyToIndex(x,y) {
 //绘制指定坐标的单元格
 function drawBoxByXy(x,y){
 	var index = xyToIndex(x,y);
-	boxs[index].className=solidBoxCls;
+	if(boxs[index]){
+		boxs[index].className=solidBoxCls;
+	}else{
+		if(window.fallTetrominoTimer){
+			clearInterval(window.fallTetrominoTimer);
+		}
+	}
 }
 //绘制一个四拼版
 function drawTetromino(arrPos){
@@ -28,9 +34,38 @@ function arrToPos(arr){
 	}
 	return arrPos;
 }
-//
+//清场方法
+function clearSite(){
+	for(var i=0;i<200;i++){
+		if(boxs[i].className=solidBoxCls){
+			boxs[i].className="";
+		}
+	}
+}
+//下落四拼版
+function fallTetromino(){
+	drawTetromino(tetrominoFall);
+	window.fallTetrominoTimer = setInterval(function(){
+		console.log("下落定时器");
+		moveTetrominoByY(1);
+		clearSite();
+		drawTetromino(tetrominoFall);
+	},1000);
+}
+//将四拼版下落指定y坐标(这里利用了js引用类型的特性,故无需返回值)
+function moveTetrominoByY(y){
+	var temp;
+	for(var i=0;i<4;i++){
+		temp=tetrominoFall[i];
+		temp.y+=y;
+	}
+}
+
+//待操作的单元格
 var boxs = J_site.getElementsByTagName("i");
+//实心单元格样式类
 var solidBoxCls = "box1";
+//下落单元格
 var tetrominoFall=[
 	[0,1,0,0],
 	[0,1,0,0],
@@ -39,5 +74,3 @@ var tetrominoFall=[
 ];
 //创建一个可操作的四拼版
 tetrominoFall = arrToPos(tetrominoFall);
-//绘制一个四拼版
-drawTetromino(tetrominoFall);
