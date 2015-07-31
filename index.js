@@ -1,3 +1,19 @@
+//扩展一个对象的复制方法
+Object.prototype.clone=function(){
+	var objClone = new Object();
+	for(var key in this){
+		objClone[key]=this[key];
+	}
+	return objClone;
+}
+//复制一个四拼版
+function cloneTetromino(arr){
+	var newTetromino=[];
+	for(var i=0;i<4;i++){
+		newTetromino.push(arr[i].clone());
+	}
+	return newTetromino;
+}
 //将坐标转换为下标(2,1)
 function xyToIndex(x,y) {
 	return (y-1)*10+x-1;
@@ -10,6 +26,9 @@ function drawBoxByXy(x,y){
 	}else{
 		if(window.fallTetrominoTimer){
 			clearInterval(window.fallTetrominoTimer);
+			window.fallTetrominoTimer=null;
+			clearSite();
+			drawTetromino(tetrominoFallOld);
 		}
 	}
 }
@@ -47,6 +66,7 @@ function fallTetromino(){
 	drawTetromino(tetrominoFall);
 	window.fallTetrominoTimer = setInterval(function(){
 		console.log("下落定时器");
+		tetrominoFallOld=cloneTetromino(tetrominoFall);
 		moveTetrominoByY(1);
 		clearSite();
 		drawTetromino(tetrominoFall);
@@ -74,3 +94,5 @@ var tetrominoFall=[
 ];
 //创建一个可操作的四拼版
 tetrominoFall = arrToPos(tetrominoFall);
+//存放下落四拼版的上一个状态
+var tetrominoFallOld;
