@@ -23,13 +23,6 @@ function drawBoxByXy(x,y){
 	var index = xyToIndex(x,y);
 	if(boxs[index]){
 		boxs[index].className=solidBoxCls;
-	}else{
-		if(window.fallTetrominoTimer){
-			clearInterval(window.fallTetrominoTimer);
-			window.fallTetrominoTimer=null;
-			clearSite();
-			drawTetromino(tetrominoFallOld);
-		}
 	}
 }
 //绘制一个四拼版
@@ -67,24 +60,76 @@ function fallTetromino(){
 	window.fallTetrominoTimer = setInterval(function(){
 		console.log("下落定时器");
 		tetrominoFallOld=cloneTetromino(tetrominoFall);
-		moveTetrominoByY(1);
-		clearSite();
-		drawTetromino(tetrominoFall);
+		var state=moveTetrominoByXy(null,1);
+		if(state){
+			clearSite();
+			drawTetromino(tetrominoFall);
+		}
 	},1000);
 }
 //将四拼版下落指定y坐标(这里利用了js引用类型的特性,故无需返回值)
-function moveTetrominoByY(y){
-	var temp;
+function moveTetrominoByXy(x,y){
+	var temp,_x,_y;
 	for(var i=0;i<4;i++){
 		temp=tetrominoFall[i];
-		temp.y+=y;
+		_x = temp.x+x;
+		_y = temp.y+y;
+		if(_x>10||_x<1){
+			return false;
+		}else{
+			temp.x+=x;
+		}
+		if(_y>20){
+			tetrominoStopDrop();
+			return false;
+		}else{
+			temp.y+=y;
+		}
+	}
+	return true;
+}
+//四拼版停止下坠
+function tetrominoStopDrop(){
+	if(window.fallTetrominoTimer){
+		clearInterval(window.fallTetrominoTimer);
+		window.fallTetrominoTimer=null;
+		dirKey=false;
+		clearSite();
+		drawTetromino(tetrominoFallOld);			
 	}
 }
+//方向键
+document.onkeydown=function(event){
+	if(!dirKey){
+		return;
+	}
+    var e = event || window.event;
+    if(e && e.keyCode==38){//上
+        console.log("up");
+    }
+    if(e && e.keyCode==39){//右
+        console.log("right");
+        moveTetrominoByXy(1,null);
+        clearSite();
+        drawTetromino(tetrominoFall);
+    }
+    if(e && e.keyCode==37){//左
+        console.log("left");
+        moveTetrominoByXy(-1,null);
+        clearSite();
+        drawTetromino(tetrominoFall);
+    }
+    if(e && e.keyCode==40){//下
+        console.log("down");
+    }
+}; 
 
 //待操作的单元格
 var boxs = J_site.getElementsByTagName("i");
 //实心单元格样式类
 var solidBoxCls = "box1";
+//方向键是否有效标示
+var dirKey = true;
 //下落单元格
 var tetrominoFall=[
 	[0,1,0,0],
