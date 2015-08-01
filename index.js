@@ -100,6 +100,29 @@ function tetrominoStopDrop(){
 		drawTetromino(tetrominoFallOld);			
 	}
 }
+//旋转四拼版方法
+function rotateTetromino(arr){
+	var arrPos=[];
+	for(var i=0;i<4;i++){
+		var temp = rotete90(arr[i].x,arr[i].y);
+		arrPos.push(temp);
+	}
+	return arrPos;
+}
+//得到一个坐标90°旋转后的坐标,(2,2)为旋转的圆心
+function rotete90(x,y){
+	var rad = AngleToRadian(90);
+	var _x,_y,pos={};
+	_x = (x-2)*Math.cos(rad)-(y-2)*Math.sin(rad)+2;
+	_y = (x-2)*Math.sin(rad)+(y-2)*Math.cos(rad)+2;
+	pos.x=parseInt(_x);
+	pos.y=parseInt(_y);
+	return pos;
+}
+//角度转换为弧度
+function AngleToRadian(n){
+	return (2*Math.PI / 360)*n;
+}
 //方向键
 document.onkeydown=function(event){
 	if(!dirKey){
