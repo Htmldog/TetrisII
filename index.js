@@ -70,8 +70,9 @@ function fallTetromino(){
 //将四拼版下落指定y坐标(这里利用了js引用类型的特性,故无需返回值)
 function moveTetrominoByXy(x,y){
 	var temp,_x,_y;
+	var tempTetromino=cloneTetromino(tetrominoFall);
 	for(var i=0;i<4;i++){
-		temp=tetrominoFall[i];
+		temp=tempTetromino[i];
 		_x = temp.x+x;
 		_y = temp.y+y;
 		if(_x>10||_x<1){
@@ -86,6 +87,7 @@ function moveTetrominoByXy(x,y){
 			temp.y+=y;
 		}
 	}
+	tetrominoFall=tempTetromino;
 	return true;
 }
 //四拼版停止下坠
@@ -132,10 +134,10 @@ var solidBoxCls = "box1";
 var dirKey = true;
 //下落单元格
 var tetrominoFall=[
-	[0,1,0,0],
-	[0,1,0,0],
-	[0,1,0,0],
-	[0,1,0,0]
+    [0,0,0,0],
+    [0,1,1,0],
+    [1,1,0,0],
+    [0,0,0,0]
 ];
 //创建一个可操作的四拼版
 tetrominoFall = arrToPos(tetrominoFall);
